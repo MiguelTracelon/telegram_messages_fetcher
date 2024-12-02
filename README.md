@@ -78,6 +78,12 @@ This project uses the Telethon library to connect to a Telegram user account and
 - **Session errors**: If you're prompted for 2FA, enter the password to complete the login.
 - **Connection issues**: Ensure you have an active internet connection and correct API credentials.
 
+## Acknowledgment
+This project was started by [@MiguelTracelon] (https://www.github.com/MiguelTracelon)
+
+Special thank to:
+- Tacelon (https://tracelon.com) for initial realease
+- People from SEAL (https://securityalliance.org/) for ideological support
 ## Notes
 
 - **Privacy and Permissions**: Ensure you have permission to fetch and store messages, especially from groups and channels.
