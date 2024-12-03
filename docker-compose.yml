@@ -1,0 +1,21 @@
+services:
+  telegram-message-archiver:
+    container_name: telegram-message-archiver
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - telegram-message-archiver-db-data:/var/lib/mysql
+    ports:
+      - ${DB_PORT}:3306
+    env_file:
+      - .env
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "10"
+
+volumes:
+  telegram-message-archiver-db-data:

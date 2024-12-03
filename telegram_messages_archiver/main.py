@@ -1,22 +1,42 @@
-import os
-import asyncio
-from telethon import TelegramClient
+import click
 from telethon.errors import SessionPasswordNeededError
-from dotenv import load_dotenv
+
+from cmd import root
+from config import Config
+from telegram_messages_archiver.database import Database
+
 
 # Load environment variables
-load_dotenv()
-api_id = os.getenv("API_ID")
-api_hash = os.getenv("API_HASH")
-phone = os.getenv("PHONE")
+# load_dotenv()
+# api_id = os.getenv("API_ID")
+# api_hash = os.getenv("API_HASH")
+# phone = os.getenv("PHONE")
 
 # Initialize the client
-client = TelegramClient("session_name", api_id, api_hash)
+# client = TelegramClient("session_name", api_id, api_hash)
 
-async def main():
+@click.command()
+@click.version_option(version="0.1.0", prog_name="Telegram Message Archiver")
+@click.option("--api_id", envvar="API_ID", help="Telegram API ID")
+@click.option("--api_hash", envvar="API_HASH", help="Telegram API HASH")
+@click.option("--phone", envvar="PHONE", help="Telegram phone number")
+@click.option("--message_limit", envvar="MESSAGE_LIMIT", help="Telegram message limit")
+@click.option("--dsn", envvar="DSN", help="DSN")
+def hello(**kwargs):
+    Config.init(**kwargs)
+
+    # client = TelegramClient("session_name", api_id, api_hash)
+    # with client:
+    #     client.loop.run_until_complete(run(client, phone))
+
+
+async def run(client, phone):
     # Connect to the Telegram account
     await client.start(phone)
     print("Connected to Telegram")
+
+    with Database().get_db() as db:
+        db.flush()
 
     # Request 2FA code if enabled
     if await client.is_user_authorized() is False:
@@ -26,9 +46,9 @@ async def main():
             password = input("Please enter your 2FA password: ")
             await client.sign_in(password=password)
 
-    MESSAGE_LIMIT = 1000
+    MESSAGE_LIMIT = 1
     # Open file to save messages
-    with open("telegram_messages.txt", "w", encoding="utf-8") as f:
+    with open("../telegram_messages.txt", "w", encoding="utf-8") as f:
         # Iterate over all dialogs (chats, groups, channels)
         async for dialog in client.iter_dialogs():
             entity = dialog.entity
@@ -58,5 +78,9 @@ async def main():
     print("Messages saved to telegram_messages.txt")
 
 # Run the script
-with client:
-    client.loop.run_until_complete(main())
+# with client:
+#     client.loop.run_until_complete(hello())
+
+
+# if __name__ == '__main__':
+#     root()
