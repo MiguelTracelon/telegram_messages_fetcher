@@ -8,7 +8,7 @@ class Dialog(Base):
     __tablename__ = 'dialogs'
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
-    dialog_id: Mapped[int] = mapped_column(BigInteger)
+    dialog_original_id: Mapped[int] = mapped_column(BigInteger)
     archived: Mapped[bool]
     name: Mapped[str] = mapped_column(String(255))
 
